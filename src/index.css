@@ -1,0 +1,386 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  padding: 40px 20px;
+}
+
+.header h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+}
+
+.dropzone {
+  border: 3px dashed #667eea;
+  border-radius: 12px;
+  padding: 60px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8f9ff;
+}
+
+.dropzone:hover {
+  border-color: #764ba2;
+  background: #f0f2ff;
+}
+
+.dropzone.active {
+  border-color: #4caf50;
+  background: #e8f5e9;
+}
+
+.dropzone-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.dropzone-text {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.dropzone-hint {
+  font-size: 0.9rem;
+  color: #999;
+}
+
+.form-group {
+  margin: 20px 0;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 10px;
+}
+
+.error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #c62828;
+  margin: 20px 0;
+}
+
+.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #2e7d32;
+  margin: 20px 0;
+}
+
+.preview-image {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.results {
+  margin-top: 30px;
+}
+
+.result-section {
+  margin-bottom: 30px;
+}
+
+.result-section h2 {
+  color: #667eea;
+  margin-bottom: 16px;
+  font-size: 1.8rem;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 8px;
+}
+
+.result-section h3 {
+  color: #764ba2;
+  margin: 20px 0 12px;
+  font-size: 1.4rem;
+}
+
+.threat-card {
+  background: #f8f9ff;
+  border-left: 4px solid #667eea;
+  padding: 20px;
+  margin: 16px 0;
+  border-radius: 8px;
+}
+
+.threat-card.critical {
+  border-left-color: #d32f2f;
+  background: #ffebee;
+}
+
+.threat-card.high {
+  border-left-color: #f57c00;
+  background: #fff3e0;
+}
+
+.threat-card.medium {
+  border-left-color: #fbc02d;
+  background: #fffde7;
+}
+
+.threat-card.low {
+  border-left-color: #388e3c;
+  background: #e8f5e9;
+}
+
+.threat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.threat-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.severity-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.severity-badge.critical {
+  background: #d32f2f;
+  color: white;
+}
+
+.severity-badge.high {
+  background: #f57c00;
+  color: white;
+}
+
+.severity-badge.medium {
+  background: #fbc02d;
+  color: #333;
+}
+
+.severity-badge.low {
+  background: #388e3c;
+  color: white;
+}
+
+.threat-description {
+  margin: 12px 0;
+  color: #555;
+  line-height: 1.6;
+}
+
+.threat-detail {
+  margin: 12px 0;
+}
+
+.threat-detail strong {
+  color: #333;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.component-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.component-tag {
+  background: #667eea;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+}
+
+.architecture-component {
+  background: #f5f5f5;
+  padding: 16px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border-left: 3px solid #764ba2;
+}
+
+.component-name {
+  font-weight: 600;
+  color: #764ba2;
+  font-size: 1.1rem;
+}
+
+.component-type {
+  display: inline-block;
+  background: #764ba2;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-left: 8px;
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .header p {
+    font-size: 1rem;
+  }
+  
+  .card {
+    padding: 20px;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  table th,
+  table td {
+    padding: 8px !important;
+  }
+}
+
+/* Jobs List Table Styles */
+table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table thead tr {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+table thead th {
+  color: white;
+}
+
+table tbody tr {
+  transition: background-color 0.2s;
+}
+
+table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
