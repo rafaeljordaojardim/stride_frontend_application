@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import FileUpload from './components/FileUpload';
 import ResultsView from './components/ResultsView';
@@ -13,47 +13,13 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
-  const [jobId, setJobId] = useState(null);
-  const [jobStatus, setJobStatus] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
     setError(null);
+    setSuccessMessage(null);
   };
-
-  // Poll for job status
-  useEffect(() => {
-    if (!jobId || !loading) return;
-
-    const pollInterval = setInterval(async () => {
-      try {
-        console.log(`Polling job status: ${jobId}`);
-        const response = await axios.get(`${API_URL}/api/analysis/job/${jobId}`);
-        
-        const { status, data, error: jobError } = response.data;
-        setJobStatus(status);
-
-        if (status === 'completed') {
-          console.log('Analysis completed!');
-          setResults(data);
-          setLoading(false);
-          clearInterval(pollInterval);
-        } else if (status === 'failed') {
-          console.error('Análise falhou:', jobError);
-          setError(jobError || 'Análise falhou');
-          setLoading(false);
-          clearInterval(pollInterval);
-        }
-      } catch (err) {
-        console.error('Error polling job status:', err);
-        setError('Falha ao verificar status do trabalho');
-        setLoading(false);
-        clearInterval(pollInterval);
-      }
-    }, 2000); // Poll every 2 seconds
-
-    return () => clearInterval(pollInterval);
-  }, [jobId, loading]);
 
   const handleAnalyze = async () => {
     if (!selectedFile || !systemName.trim()) {
@@ -63,9 +29,7 @@ function App() {
 
     setLoading(true);
     setError(null);
-    setResults(null);
-    setJobId(null);
-    setJobStatus('pending');
+    setSuccessMessage(null);
 
     try {
       const formData = new FormData();
@@ -81,8 +45,15 @@ function App() {
       });
 
       const { jobId: newJobId } = response.data;
-      console.log('Job created:', newJobId);
-      setJobId(newJobId);
+      console.log('Trabalho criado:', newJobId);
+      
+      // Mostrar mensagem de sucesso
+      setSuccessMessage(`✅ Análise iniciada com sucesso! Você pode acompanhar o progresso na aba "Todos os Trabalhos".`);
+      
+      // Limpar formulário para permitir novo upload
+      setSelectedFile(null);
+      setSystemName('');
+      setLoading(false);
       
     } catch (err) {
       console.error('Analysis error:', err);
@@ -96,8 +67,7 @@ function App() {
     setSystemName('');
     setResults(null);
     setError(null);
-    setJobId(null);
-    setJobStatus(null);
+    setSuccessMessage(null);
   };
 
   const handleSelectJobFromList = (jobData) => {
@@ -185,33 +155,35 @@ function App() {
               </div>
             )}
 
-            {loading ? (
-              <div className="loading">
-                <div className="spinner"></div>
-                <div className="loading-text">
-                  <strong>Analisando sua arquitetura...</strong>
-                  <p>Isso pode levar 2-3 minutos</p>
-                  <p style={{ fontSize: '0.9rem', marginTop: '10px', color: '#999' }}>
-                    {jobStatus === 'pending' && '⏳ Trabalho na fila, aguardando início...'}
-                    {jobStatus === 'processing' && '🔍 Analisando diagrama com IA...'}
-                    {!jobStatus && '� Criando trabalho de análise...'}
-                  </p>
-                  {jobId && (
-                    <p style={{ fontSize: '0.8rem', marginTop: '10px', color: '#666', fontFamily: 'monospace' }}>
-                      ID do Trabalho: {jobId}
-                    </p>
-                  )}
-                </div>
+            {successMessage && (
+              <div className="success" style={{ marginBottom: '20px' }}>
+                <strong>{successMessage}</strong>
+                <p style={{ marginTop: '8px', fontSize: '0.9rem' }}>
+                  Faça upload de outro diagrama ou veja o status na aba "Todos os Trabalhos".
+                </p>
               </div>
-            ) : (
-              <button
-                className="button"
-                onClick={handleAnalyze}
-                disabled={!selectedFile || !systemName.trim()}
-              >
-                🚀 Iniciar Análise
-              </button>
             )}
+
+            <button
+              className="button"
+              onClick={handleAnalyze}
+              disabled={loading || !selectedFile || !systemName.trim()}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner" style={{ 
+                    display: 'inline-block', 
+                    width: '16px', 
+                    height: '16px', 
+                    marginRight: '8px',
+                    verticalAlign: 'middle'
+                  }}></span>
+                  Enviando...
+                </>
+              ) : (
+                '🚀 Iniciar Análise'
+              )}
+            </button>
           </div>
         ) : (
           <>

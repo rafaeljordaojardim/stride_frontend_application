@@ -11,6 +11,20 @@ function ResultsView({ results }) {
     }));
   };
 
+  const expandAll = () => {
+    const allThreats = {};
+    Object.entries(groupedThreats).forEach(([category, threats]) => {
+      threats.forEach((_, idx) => {
+        allThreats[`${category}-${idx}`] = true;
+      });
+    });
+    setExpandedThreats(allThreats);
+  };
+
+  const collapseAll = () => {
+    setExpandedThreats({});
+  };
+
   const handleDownloadPDF = () => {
     try {
       pdfGenerator.downloadReport(results, results.system_name || 'relatorio');
@@ -130,10 +144,52 @@ function ResultsView({ results }) {
 
       {/* Threats by Category */}
       <div className="card result-section">
-        <h2>🔒 Análise de Ameaças STRIDE</h2>
-        <p style={{ marginBottom: '30px', color: '#555' }}>
-          Total de ameaças identificadas: <strong>{results.threats.length}</strong>
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <div>
+            <h2 style={{ margin: 0 }}>🔒 Análise de Ameaças STRIDE</h2>
+            <p style={{ marginTop: '8px', marginBottom: 0, color: '#555' }}>
+              Total de ameaças identificadas: <strong>{results.threats.length}</strong>
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={expandAll}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#28a745',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => e.target.style.backgroundColor = '#218838'}
+              onMouseOut={(e) => e.target.style.backgroundColor = '#28a745'}
+            >
+              📖 Expandir Todos
+            </button>
+            <button
+              onClick={collapseAll}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => e.target.style.backgroundColor = '#5a6268'}
+              onMouseOut={(e) => e.target.style.backgroundColor = '#6c757d'}
+            >
+              📕 Recolher Todos
+            </button>
+          </div>
+        </div>
 
         {Object.entries(groupedThreats).map(([category, threats]) => (
           <div key={category} style={{ marginBottom: '40px' }}>
@@ -147,26 +203,54 @@ function ResultsView({ results }) {
                 <div 
                   key={idx} 
                   className={`threat-card ${threat.severity.toLowerCase()}`}
-                  onClick={() => toggleThreat(threatIndex)}
-                  style={{ cursor: 'pointer' }}
                 >
                   <div className="threat-header">
-                    <div className="threat-title">
-                      {isExpanded ? '🔽' : '▶️'} {threat.title}
+                    <div className="threat-title" style={{ flex: 1 }}>
+                      {threat.title}
                     </div>
-                    <span className={`severity-badge ${threat.severity.toLowerCase()}`}>
-                      {threat.severity}
-                    </span>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <span className={`severity-badge ${threat.severity.toLowerCase()}`}>
+                        {threat.severity}
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleThreat(threatIndex);
+                        }}
+                        style={{
+                          padding: '6px 12px',
+                          backgroundColor: isExpanded ? '#f0f0f0' : '#007bff',
+                          color: isExpanded ? '#333' : 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          fontWeight: '500',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}
+                        onMouseOver={(e) => {
+                          e.target.style.opacity = '0.8';
+                        }}
+                        onMouseOut={(e) => {
+                          e.target.style.opacity = '1';
+                        }}
+                      >
+                        {isExpanded ? '🔼 Recolher' : '🔽 Expandir'}
+                      </button>
+                    </div>
                   </div>
 
                   {isExpanded && (
                     <>
-                      <div className="threat-description">
+                      <div className="threat-description" style={{ userSelect: 'text', cursor: 'text' }}>
                         {threat.description}
                       </div>
 
                       {threat.affected_components && threat.affected_components.length > 0 && (
-                        <div className="threat-detail">
+                        <div className="threat-detail" style={{ userSelect: 'text', cursor: 'text' }}>
                           <strong>🎯 Componentes Afetados:</strong>
                           <div className="component-list">
                             {threat.affected_components.map((comp, i) => (
@@ -177,7 +261,7 @@ function ResultsView({ results }) {
                       )}
 
                       {threat.attack_scenario && (
-                        <div className="threat-detail">
+                        <div className="threat-detail" style={{ userSelect: 'text', cursor: 'text' }}>
                           <strong>⚔️ Cenário de Ataque:</strong>
                           <p style={{ color: '#555', marginTop: '4px' }}>
                             {threat.attack_scenario}
@@ -186,7 +270,7 @@ function ResultsView({ results }) {
                       )}
 
                       {threat.mitigation && (
-                        <div className="threat-detail">
+                        <div className="threat-detail" style={{ userSelect: 'text', cursor: 'text' }}>
                           <strong>🛡️ Estratégia de Mitigação:</strong>
                           <p style={{ color: '#555', marginTop: '4px' }}>
                             {threat.mitigation}
@@ -195,7 +279,7 @@ function ResultsView({ results }) {
                       )}
 
                       {threat.references && threat.references.length > 0 && (
-                        <div className="threat-detail">
+                        <div className="threat-detail" style={{ userSelect: 'text', cursor: 'text' }}>
                           <strong>📚 Referências:</strong>
                           <ul style={{ marginLeft: '20px', marginTop: '4px', color: '#555' }}>
                             {threat.references.map((ref, i) => (
@@ -204,6 +288,51 @@ function ResultsView({ results }) {
                           </ul>
                         </div>
                       )}
+
+                      {/* Botão para copiar todo o conteúdo da ameaça */}
+                      <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #e0e0e0' }}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const textToCopy = `
+${threat.title}
+Severidade: ${threat.severity}
+
+Descrição:
+${threat.description}
+
+${threat.affected_components ? `Componentes Afetados:\n${threat.affected_components.join(', ')}` : ''}
+
+${threat.attack_scenario ? `Cenário de Ataque:\n${threat.attack_scenario}` : ''}
+
+${threat.mitigation ? `Estratégia de Mitigação:\n${threat.mitigation}` : ''}
+
+${threat.references ? `Referências:\n${threat.references.join('\n')}` : ''}
+                            `.trim();
+                            
+                            navigator.clipboard.writeText(textToCopy).then(() => {
+                              alert('✅ Conteúdo copiado para a área de transferência!');
+                            }).catch(() => {
+                              alert('❌ Falha ao copiar. Tente selecionar manualmente.');
+                            });
+                          }}
+                          style={{
+                            padding: '6px 12px',
+                            backgroundColor: '#17a2b8',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.85rem',
+                            fontWeight: '500',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseOver={(e) => e.target.style.backgroundColor = '#138496'}
+                          onMouseOut={(e) => e.target.style.backgroundColor = '#17a2b8'}
+                        >
+                          📋 Copiar Conteúdo
+                        </button>
+                      </div>
                     </>
                   )}
                 </div>
