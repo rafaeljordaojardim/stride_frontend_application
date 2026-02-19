@@ -17,7 +17,7 @@ function JobsList({ onSelectJob }) {
       setError(null);
     } catch (err) {
       console.error('Error fetching jobs:', err);
-      setError('Failed to load jobs');
+      setError('Falha ao carregar trabalhos');
     } finally {
       setLoading(false);
     }
@@ -73,12 +73,12 @@ function JobsList({ onSelectJob }) {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffMins < 1) return 'Agora mesmo';
+    if (diffMins < 60) return `${diffMins}min atrás`;
+    if (diffHours < 24) return `${diffHours}h atrás`;
+    if (diffDays < 7) return `${diffDays}d atrás`;
     
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
   };
 
   const handleViewJob = async (jobId) => {
@@ -87,13 +87,13 @@ function JobsList({ onSelectJob }) {
       if (response.data.status === 'completed' && response.data.data) {
         onSelectJob(response.data.data);
       } else if (response.data.status === 'failed') {
-        alert(`Job failed: ${response.data.error}`);
+        alert(`Trabalho falhou: ${response.data.error}`);
       } else {
-        alert(`Job is still ${response.data.status}. Please wait...`);
+        alert(`Trabalho ainda está ${response.data.status}. Por favor, aguarde...`);
       }
     } catch (err) {
       console.error('Error fetching job details:', err);
-      alert('Failed to load job details');
+      alert('Falha ao carregar detalhes do trabalho');
     }
   };
 
@@ -103,11 +103,11 @@ function JobsList({ onSelectJob }) {
       if (response.data.status === 'completed' && response.data.data) {
         pdfGenerator.downloadReport(response.data.data, systemName);
       } else {
-        alert('Cannot download PDF. Job is not completed yet.');
+        alert('Não é possível baixar PDF. Trabalho ainda não foi concluído.');
       }
     } catch (err) {
       console.error('Error downloading PDF:', err);
-      alert('Failed to download PDF');
+      alert('Falha ao baixar PDF');
     }
   };
 
@@ -116,7 +116,7 @@ function JobsList({ onSelectJob }) {
       <div className="card">
         <div className="loading">
           <div className="spinner"></div>
-          <p>Loading jobs...</p>
+          <p>Carregando trabalhos...</p>
         </div>
       </div>
     );
@@ -125,7 +125,7 @@ function JobsList({ onSelectJob }) {
   return (
     <div className="card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ margin: 0 }}>📋 All Analysis Jobs</h2>
+        <h2 style={{ margin: 0 }}>📋 Todos os Trabalhos de Análise</h2>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', cursor: 'pointer' }}>
             <input
@@ -133,14 +133,14 @@ function JobsList({ onSelectJob }) {
               checked={autoRefresh}
               onChange={(e) => setAutoRefresh(e.target.checked)}
             />
-            Auto-refresh (5s)
+            Atualização automática (5s)
           </label>
           <button 
             className="button" 
             onClick={fetchJobs}
             style={{ width: 'auto', padding: '8px 16px', margin: 0 }}
           >
-            🔄 Refresh
+            🔄 Atualizar
           </button>
         </div>
       </div>
@@ -154,7 +154,7 @@ function JobsList({ onSelectJob }) {
       {jobs.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
           <p style={{ fontSize: '1.2rem' }}>📭</p>
-          <p>No jobs found. Start your first analysis!</p>
+          <p>Nenhum trabalho encontrado. Inicie sua primeira análise!</p>
         </div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
@@ -162,11 +162,11 @@ function JobsList({ onSelectJob }) {
             <thead>
               <tr style={{ borderBottom: '2px solid #ddd' }}>
                 <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>System Name</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Job ID</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Created</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Updated</th>
-                <th style={{ padding: '12px', textAlign: 'center', fontWeight: '600' }}>Actions</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Nome do Sistema</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>ID do Trabalho</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Criado</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Atualizado</th>
+                <th style={{ padding: '12px', textAlign: 'center', fontWeight: '600' }}>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -223,7 +223,7 @@ function JobsList({ onSelectJob }) {
                             fontWeight: '500'
                           }}
                         >
-                          👁️ View
+                          👁️ Visualizar
                         </button>
                         <button
                           onClick={() => handleDownloadPDF(job.jobId, job.systemName)}
@@ -237,7 +237,7 @@ function JobsList({ onSelectJob }) {
                             fontSize: '0.85rem',
                             fontWeight: '500'
                           }}
-                          title="Download PDF Report"
+                          title="Baixar Relatório PDF"
                         >
                           📥 PDF
                         </button>
@@ -256,11 +256,11 @@ function JobsList({ onSelectJob }) {
                           fontWeight: '500'
                         }}
                       >
-                        ⚠️ View Error
+                        ⚠️ Ver Erro
                       </button>
                     ) : (
                       <span style={{ fontSize: '0.85rem', color: '#999' }}>
-                        ⏳ Processing...
+                        ⏳ Processando...
                       </span>
                     )}
                   </td>
@@ -272,11 +272,11 @@ function JobsList({ onSelectJob }) {
       )}
 
       <div style={{ marginTop: '20px', padding: '12px', backgroundColor: '#f5f5f5', borderRadius: '4px', fontSize: '0.85rem', color: '#666' }}>
-        <strong>Total Jobs:</strong> {jobs.length} | 
-        <strong style={{ marginLeft: '12px' }}>Pending:</strong> {jobs.filter(j => j.status === 'pending').length} | 
-        <strong style={{ marginLeft: '12px' }}>Processing:</strong> {jobs.filter(j => j.status === 'processing').length} | 
-        <strong style={{ marginLeft: '12px' }}>Completed:</strong> {jobs.filter(j => j.status === 'completed').length} | 
-        <strong style={{ marginLeft: '12px' }}>Failed:</strong> {jobs.filter(j => j.status === 'failed').length}
+        <strong>Total de Trabalhos:</strong> {jobs.length} | 
+        <strong style={{ marginLeft: '12px' }}>Pendentes:</strong> {jobs.filter(j => j.status === 'pending').length} | 
+        <strong style={{ marginLeft: '12px' }}>Processando:</strong> {jobs.filter(j => j.status === 'processing').length} | 
+        <strong style={{ marginLeft: '12px' }}>Concluídos:</strong> {jobs.filter(j => j.status === 'completed').length} | 
+        <strong style={{ marginLeft: '12px' }}>Falhados:</strong> {jobs.filter(j => j.status === 'failed').length}
       </div>
     </div>
   );

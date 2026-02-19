@@ -36,16 +36,16 @@ function FileUpload({ onFileSelect, selectedFile }) {
               {(selectedFile.size / 1024).toFixed(2)} KB
             </div>
             <div className="dropzone-hint" style={{ marginTop: '10px' }}>
-              Click or drag to replace
+              Clique ou arraste para substituir
             </div>
           </>
         ) : (
           <>
             <div className="dropzone-text">
-              {isDragActive ? 'Drop the image here' : 'Drag & drop diagram image'}
+              {isDragActive ? 'Solte a imagem aqui' : 'Arraste e solte a imagem do diagrama'}
             </div>
             <div className="dropzone-hint">
-              or click to select (PNG, JPG, GIF)
+              ou clique para selecionar (PNG, JPG, GIF)
             </div>
           </>
         )}
@@ -55,7 +55,7 @@ function FileUpload({ onFileSelect, selectedFile }) {
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <img 
             src={URL.createObjectURL(selectedFile)} 
-            alt="Preview" 
+            alt="Visualização" 
             className="preview-image"
             style={{ maxHeight: '300px' }}
           />

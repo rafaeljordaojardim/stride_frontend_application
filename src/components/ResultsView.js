@@ -13,10 +13,10 @@ function ResultsView({ results }) {
 
   const handleDownloadPDF = () => {
     try {
-      pdfGenerator.downloadReport(results, results.system_name || 'report');
+      pdfGenerator.downloadReport(results, results.system_name || 'relatorio');
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      alert('Falha ao gerar PDF. Por favor, tente novamente.');
     }
   };
 
@@ -35,9 +35,9 @@ function ResultsView({ results }) {
       <div className="card" style={{ padding: '15px', backgroundColor: '#f0f8ff' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <strong style={{ fontSize: '1.1rem', color: '#333' }}>📄 Export Report</strong>
+            <strong style={{ fontSize: '1.1rem', color: '#333' }}>📄 Exportar Relatório</strong>
             <p style={{ marginTop: '5px', color: '#666', fontSize: '0.9rem' }}>
-              Download a comprehensive PDF report with all findings
+              Baixe um relatório PDF completo com todas as descobertas
             </p>
           </div>
           <button
@@ -59,7 +59,7 @@ function ResultsView({ results }) {
             onMouseOver={(e) => e.target.style.backgroundColor = '#b71c1c'}
             onMouseOut={(e) => e.target.style.backgroundColor = '#d32f2f'}
           >
-            📥 Download PDF
+            📥 Baixar PDF
           </button>
         </div>
       </div>
@@ -67,10 +67,10 @@ function ResultsView({ results }) {
       {/* Diagram */}
       {results.diagram_image && (
         <div className="card">
-          <h2>📊 Analyzed Diagram</h2>
+          <h2>📊 Diagrama Analisado</h2>
           <img 
             src={results.diagram_image} 
-            alt="Architecture Diagram" 
+            alt="Diagrama de Arquitetura" 
             className="preview-image"
           />
         </div>
@@ -78,12 +78,12 @@ function ResultsView({ results }) {
 
       {/* Architecture */}
       <div className="card result-section">
-        <h2>🏗️ System Architecture</h2>
+        <h2>🏗️ Arquitetura do Sistema</h2>
         <p style={{ marginBottom: '20px', color: '#555', lineHeight: '1.6' }}>
           {results.architecture.description}
         </p>
 
-        <h3>Components</h3>
+        <h3>Componentes</h3>
         {results.architecture.components.map((component, idx) => (
           <div key={idx} className="architecture-component">
             <div className="component-name">
@@ -107,7 +107,7 @@ function ResultsView({ results }) {
 
         {results.architecture.data_flows && results.architecture.data_flows.length > 0 && (
           <>
-            <h3 style={{ marginTop: '30px' }}>Data Flows</h3>
+            <h3 style={{ marginTop: '30px' }}>Fluxos de Dados</h3>
             <ul style={{ marginLeft: '20px', color: '#555' }}>
               {results.architecture.data_flows.map((flow, idx) => (
                 <li key={idx} style={{ marginBottom: '8px' }}>{flow}</li>
@@ -118,7 +118,7 @@ function ResultsView({ results }) {
 
         {results.architecture.trust_boundaries && results.architecture.trust_boundaries.length > 0 && (
           <>
-            <h3 style={{ marginTop: '30px' }}>Trust Boundaries</h3>
+            <h3 style={{ marginTop: '30px' }}>Limites de Confiança</h3>
             <ul style={{ marginLeft: '20px', color: '#555' }}>
               {results.architecture.trust_boundaries.map((boundary, idx) => (
                 <li key={idx} style={{ marginBottom: '8px' }}>{boundary}</li>
@@ -130,9 +130,9 @@ function ResultsView({ results }) {
 
       {/* Threats by Category */}
       <div className="card result-section">
-        <h2>🔒 STRIDE Threat Analysis</h2>
+        <h2>🔒 Análise de Ameaças STRIDE</h2>
         <p style={{ marginBottom: '30px', color: '#555' }}>
-          Total threats identified: <strong>{results.threats.length}</strong>
+          Total de ameaças identificadas: <strong>{results.threats.length}</strong>
         </p>
 
         {Object.entries(groupedThreats).map(([category, threats]) => (
@@ -167,7 +167,7 @@ function ResultsView({ results }) {
 
                       {threat.affected_components && threat.affected_components.length > 0 && (
                         <div className="threat-detail">
-                          <strong>🎯 Affected Components:</strong>
+                          <strong>🎯 Componentes Afetados:</strong>
                           <div className="component-list">
                             {threat.affected_components.map((comp, i) => (
                               <span key={i} className="component-tag">{comp}</span>
@@ -178,7 +178,7 @@ function ResultsView({ results }) {
 
                       {threat.attack_scenario && (
                         <div className="threat-detail">
-                          <strong>⚔️ Attack Scenario:</strong>
+                          <strong>⚔️ Cenário de Ataque:</strong>
                           <p style={{ color: '#555', marginTop: '4px' }}>
                             {threat.attack_scenario}
                           </p>
@@ -187,7 +187,7 @@ function ResultsView({ results }) {
 
                       {threat.mitigation && (
                         <div className="threat-detail">
-                          <strong>🛡️ Mitigation Strategy:</strong>
+                          <strong>🛡️ Estratégia de Mitigação:</strong>
                           <p style={{ color: '#555', marginTop: '4px' }}>
                             {threat.mitigation}
                           </p>
@@ -196,7 +196,7 @@ function ResultsView({ results }) {
 
                       {threat.references && threat.references.length > 0 && (
                         <div className="threat-detail">
-                          <strong>📚 References:</strong>
+                          <strong>📚 Referências:</strong>
                           <ul style={{ marginLeft: '20px', marginTop: '4px', color: '#555' }}>
                             {threat.references.map((ref, i) => (
                               <li key={i}>{ref}</li>
@@ -215,7 +215,7 @@ function ResultsView({ results }) {
 
       {/* Download Options */}
       <div className="card" style={{ textAlign: 'center' }}>
-        <h3 style={{ marginBottom: '16px' }}>📥 Export Results</h3>
+        <h3 style={{ marginBottom: '16px' }}>📥 Exportar Resultados</h3>
         <button 
           className="button" 
           onClick={() => {
@@ -224,11 +224,11 @@ function ResultsView({ results }) {
             const url = URL.createObjectURL(dataBlob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `${results.system_name.replace(/\s+/g, '_')}_threat_report.json`;
+            link.download = `${results.system_name.replace(/\s+/g, '_')}_relatorio_ameacas.json`;
             link.click();
           }}
         >
-          💾 Download JSON Report
+          💾 Baixar Relatório JSON
         </button>
       </div>
     </div>

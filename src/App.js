@@ -39,14 +39,14 @@ function App() {
           setLoading(false);
           clearInterval(pollInterval);
         } else if (status === 'failed') {
-          console.error('Analysis failed:', jobError);
-          setError(jobError || 'Analysis failed');
+          console.error('Análise falhou:', jobError);
+          setError(jobError || 'Análise falhou');
           setLoading(false);
           clearInterval(pollInterval);
         }
       } catch (err) {
         console.error('Error polling job status:', err);
-        setError('Failed to check job status');
+        setError('Falha ao verificar status do trabalho');
         setLoading(false);
         clearInterval(pollInterval);
       }
@@ -57,7 +57,7 @@ function App() {
 
   const handleAnalyze = async () => {
     if (!selectedFile || !systemName.trim()) {
-      setError('Please provide both system name and diagram image');
+      setError('Por favor, forneça o nome do sistema e a imagem do diagrama');
       return;
     }
 
@@ -72,7 +72,7 @@ function App() {
       formData.append('diagram', selectedFile);
       formData.append('systemName', systemName);
 
-      console.log('Creating analysis job...');
+      console.log('Criando trabalho de análise...');
       
       const response = await axios.post(`${API_URL}/api/analysis/analyze`, formData, {
         headers: {
@@ -86,7 +86,7 @@ function App() {
       
     } catch (err) {
       console.error('Analysis error:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to start analysis');
+      setError(err.response?.data?.error || err.message || 'Falha ao iniciar análise');
       setLoading(false);
     }
   };
@@ -134,7 +134,7 @@ function App() {
             boxShadow: currentView === 'upload' ? '0 2px 8px rgba(0,123,255,0.3)' : 'none'
           }}
         >
-          🚀 New Analysis
+          🚀 Nova Análise
         </button>
         <button
           onClick={() => setCurrentView('jobs')}
@@ -151,7 +151,7 @@ function App() {
             boxShadow: currentView === 'jobs' ? '0 2px 8px rgba(0,123,255,0.3)' : 'none'
           }}
         >
-          📋 All Jobs
+          📋 Todos os Trabalhos
         </button>
       </div>
 
@@ -160,7 +160,7 @@ function App() {
           <JobsList onSelectJob={handleSelectJobFromList} />
         ) : !results ? (
           <div className="card">
-            <h2 style={{ marginBottom: '20px', color: '#333' }}>Upload Architecture Diagram</h2>
+            <h2 style={{ marginBottom: '20px', color: '#333' }}>Enviar Diagrama de Arquitetura</h2>
             
             <FileUpload 
               onFileSelect={handleFileSelect}
@@ -168,11 +168,11 @@ function App() {
             />
 
             <div className="form-group">
-              <label htmlFor="systemName">System Name *</label>
+              <label htmlFor="systemName">Nome do Sistema *</label>
               <input
                 id="systemName"
                 type="text"
-                placeholder="e.g., E-commerce Platform"
+                placeholder="ex: Plataforma de E-commerce"
                 value={systemName}
                 onChange={(e) => setSystemName(e.target.value)}
                 disabled={loading}
@@ -181,7 +181,7 @@ function App() {
 
             {error && (
               <div className="error">
-                <strong>Error:</strong> {error}
+                <strong>Erro:</strong> {error}
               </div>
             )}
 
@@ -189,16 +189,16 @@ function App() {
               <div className="loading">
                 <div className="spinner"></div>
                 <div className="loading-text">
-                  <strong>Analyzing your architecture...</strong>
-                  <p>This may take 2-3 minutes</p>
+                  <strong>Analisando sua arquitetura...</strong>
+                  <p>Isso pode levar 2-3 minutos</p>
                   <p style={{ fontSize: '0.9rem', marginTop: '10px', color: '#999' }}>
-                    {jobStatus === 'pending' && '⏳ Job queued, waiting to start...'}
-                    {jobStatus === 'processing' && '🔍 Analyzing diagram with AI...'}
-                    {!jobStatus && '� Creating analysis job...'}
+                    {jobStatus === 'pending' && '⏳ Trabalho na fila, aguardando início...'}
+                    {jobStatus === 'processing' && '🔍 Analisando diagrama com IA...'}
+                    {!jobStatus && '� Criando trabalho de análise...'}
                   </p>
                   {jobId && (
                     <p style={{ fontSize: '0.8rem', marginTop: '10px', color: '#666', fontFamily: 'monospace' }}>
-                      Job ID: {jobId}
+                      ID do Trabalho: {jobId}
                     </p>
                   )}
                 </div>
@@ -209,7 +209,7 @@ function App() {
                 onClick={handleAnalyze}
                 disabled={!selectedFile || !systemName.trim()}
               >
-                🚀 Start Analysis
+                🚀 Iniciar Análise
               </button>
             )}
           </div>
@@ -218,7 +218,7 @@ function App() {
             <div className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div className="success">
-                  <strong>✅ Analysis Completed!</strong>
+                  <strong>✅ Análise Concluída!</strong>
                   <p style={{ marginTop: '8px' }}>{results.summary}</p>
                 </div>
                 <button 
@@ -226,7 +226,7 @@ function App() {
                   onClick={handleReset}
                   style={{ width: 'auto', marginTop: '0' }}
                 >
-                  🔄 New Analysis
+                  🔄 Nova Análise
                 </button>
               </div>
             </div>
