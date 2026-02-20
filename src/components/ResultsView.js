@@ -34,6 +34,80 @@ function ResultsView({ results }) {
     }
   };
 
+  const handleDownloadTodoCSV = () => {
+    try {
+      // Cabeçalho do CSV
+      const headers = [
+        'Prioridade',
+        'Categoria STRIDE',
+        'Tarefa',
+        'Descrição',
+        'Componentes Afetados',
+        'Ação Requerida',
+        'Status',
+        'Responsável',
+        'Prazo',
+        'Notas'
+      ];
+
+      // Mapeamento de severidade para prioridade
+      const severityToPriority = {
+        'Critical': '🔴 P0 - Crítico',
+        'High': '🟠 P1 - Alto',
+        'Medium': '🟡 P2 - Médio',
+        'Low': '🟢 P3 - Baixo'
+      };
+
+      // Criar linhas do CSV
+      const rows = results.threats.map((threat, index) => {
+        const priority = severityToPriority[threat.severity] || threat.severity;
+        const category = threat.category_name || threat.category;
+        const task = `Corrigir: ${threat.title}`;
+        const description = threat.description.replace(/"/g, '""'); // Escape aspas
+        const components = threat.affected_components ? threat.affected_components.join(', ') : 'N/A';
+        const action = threat.mitigation ? threat.mitigation.replace(/"/g, '""') : 'Ver estratégia de mitigação';
+        const status = 'Pendente';
+        const responsible = '';
+        const deadline = '';
+        const notes = threat.attack_scenario ? `Cenário: ${threat.attack_scenario.substring(0, 100)}...`.replace(/"/g, '""') : '';
+
+        return [
+          priority,
+          category,
+          task,
+          description,
+          components,
+          action,
+          status,
+          responsible,
+          deadline,
+          notes
+        ];
+      });
+
+      // Converter para formato CSV
+      const csvContent = [
+        headers.map(h => `"${h}"`).join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ].join('\n');
+
+      // Adicionar BOM para UTF-8 (para Excel abrir corretamente)
+      const BOM = '\uFEFF';
+      const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${results.system_name.replace(/\s+/g, '_')}_todo_list.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      alert('✅ To-Do List exportada com sucesso!');
+    } catch (error) {
+      console.error('Error generating CSV:', error);
+      alert('Falha ao gerar CSV. Por favor, tente novamente.');
+    }
+  };
+
   const groupedThreats = results.threats.reduce((acc, threat) => {
     const category = threat.category_name || threat.category;
     if (!acc[category]) {
@@ -345,20 +419,38 @@ ${threat.references ? `Referências:\n${threat.references.join('\n')}` : ''}
       {/* Download Options */}
       <div className="card" style={{ textAlign: 'center' }}>
         <h3 style={{ marginBottom: '16px' }}>📥 Exportar Resultados</h3>
-        <button 
-          className="button" 
-          onClick={() => {
-            const dataStr = JSON.stringify(results, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${results.system_name.replace(/\s+/g, '_')}_relatorio_ameacas.json`;
-            link.click();
-          }}
-        >
-          💾 Baixar Relatório JSON
-        </button>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button 
+            className="button" 
+            onClick={handleDownloadTodoCSV}
+            style={{
+              backgroundColor: '#28a745',
+              margin: 0
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#218838'}
+            onMouseOut={(e) => e.target.style.backgroundColor = '#28a745'}
+          >
+            ✅ Baixar To-Do List (CSV)
+          </button>
+          <button 
+            className="button" 
+            onClick={() => {
+              const dataStr = JSON.stringify(results, null, 2);
+              const dataBlob = new Blob([dataStr], { type: 'application/json' });
+              const url = URL.createObjectURL(dataBlob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${results.system_name.replace(/\s+/g, '_')}_relatorio_ameacas.json`;
+              link.click();
+            }}
+            style={{ margin: 0 }}
+          >
+            💾 Baixar Relatório JSON
+          </button>
+        </div>
+        <p style={{ marginTop: '12px', fontSize: '0.85rem', color: '#666' }}>
+          💡 <strong>To-Do List CSV:</strong> Importe no Excel, Google Sheets, Trello, Jira ou seu gerenciador de tarefas favorito!
+        </p>
       </div>
     </div>
   );
