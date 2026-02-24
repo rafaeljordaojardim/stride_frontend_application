@@ -9,6 +9,7 @@ function JobsList({ onSelectJob }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [loadingJobId, setLoadingJobId] = useState(null);
 
   const fetchJobs = async () => {
     try {
@@ -83,6 +84,7 @@ function JobsList({ onSelectJob }) {
 
   const handleViewJob = async (jobId) => {
     try {
+      setLoadingJobId(jobId);
       const response = await axios.get(`${API_URL}/api/analysis/job/${jobId}`);
       if (response.data.status === 'completed' && response.data.data) {
         onSelectJob(response.data.data);
@@ -94,6 +96,8 @@ function JobsList({ onSelectJob }) {
     } catch (err) {
       console.error('Error fetching job details:', err);
       alert('Falha ao carregar detalhes do trabalho');
+    } finally {
+      setLoadingJobId(null);
     }
   };
 
@@ -212,18 +216,20 @@ function JobsList({ onSelectJob }) {
                       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                         <button
                           onClick={() => handleViewJob(job.jobId)}
+                          disabled={loadingJobId === job.jobId}
                           style={{
                             padding: '6px 16px',
-                            backgroundColor: '#4caf50',
+                            backgroundColor: loadingJobId === job.jobId ? '#9e9e9e' : '#4caf50',
                             color: 'white',
                             border: 'none',
                             borderRadius: '4px',
-                            cursor: 'pointer',
+                            cursor: loadingJobId === job.jobId ? 'not-allowed' : 'pointer',
                             fontSize: '0.85rem',
-                            fontWeight: '500'
+                            fontWeight: '500',
+                            opacity: loadingJobId === job.jobId ? 0.7 : 1
                           }}
                         >
-                          👁️ Visualizar
+                          {loadingJobId === job.jobId ? '⏳ Carregando...' : '👁️ Visualizar'}
                         </button>
                         <button
                           onClick={() => handleDownloadPDF(job.jobId, job.systemName)}
